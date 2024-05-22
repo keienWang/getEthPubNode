@@ -40,3 +40,6 @@
 ./ethernodes-fetcher -net mainnet -start 0 -length 10 -fmt addpeer
 ```
 
+## 批量 RPC 调用
+    该函数有效地利用批量 RPC 调用来并发地检索多个交易详情，通过减少往返网络请求的数量来提高性能。它使用 rpc.BatchElem 构建一批 RPC 请求，每个请求指定方法（eth_getTransactionByHash）和参数（交易哈希）。然后使用 client.Client().BatchCall() 执行批处理，以异步方式返回结果。
+
