@@ -1,64 +1,86 @@
-package gettrace
+package trace
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"math/big"
-	"time"
+	"sync"
 
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/rpc"
+	"golang.org/x/sync/semaphore"
 )
 
-func GetTrace() {
+const maxConcurrentRequests = 10 // 最大并发请求数
 
+func GetBlockTxTxR() {
 	client, err := ethclient.Dial("http://192.168.110.146:8545")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	block, err := client.BlockByNumber(context.Background(), big.NewInt(5000001))
-	var txHashs []string
-	for _, tx := range block.Transactions() {
-		txHashs = append(txHashs, tx.Hash().String())
+	latestBlock, err := client.BlockNumber(context.Background())
+	if err != nil {
+		log.Fatal(err)
 	}
-	fmt.Println(time.Now().String())
-	txscript, err := GetTransactions(txHashs)
-	fmt.Println(txscript)
-	fmt.Println(time.Now().String())
 
+	startBlock := int64(5000000) // 从区块零开始
+	sem := semaphore.NewWeighted(maxConcurrentRequests)
+
+	var wg sync.WaitGroup
+
+	for blockNum := startBlock; blockNum <= int64(latestBlock); blockNum++ {
+		if err := sem.Acquire(context.Background(), 1); err != nil {
+			log.Fatal(err)
+		}
+
+		wg.Add(1)
+		go func(blockNum int64) {
+			defer wg.Done()
+			defer sem.Release(1)
+			processBlock(client, blockNum)
+		}(blockNum)
+	}
+
+	wg.Wait()
+	fmt.Println("All blocks and receipts have been processed.")
 }
 
-func GetTransactions(txHashs []string) ([]*types.Transaction, error) {
-
-	client, err := ethclient.Dial("http://192.168.110.146:8545")
+func processBlock(client *ethclient.Client, blockNum int64) {
+	block, err := client.BlockByNumber(context.Background(), big.NewInt(blockNum))
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Failed to fetch block %d: %v\n", blockNum, err)
+		return
+	}
+	fmt.Println(block.Number())
+
+	var wg sync.WaitGroup
+	for _, tx := range block.Transactions() {
+		wg.Add(1)
+		go func(tx *types.Transaction) {
+			defer wg.Done()
+			processTransaction(client, tx)
+		}(tx)
+	}
+	wg.Wait()
+}
+
+func processTransaction(client *ethclient.Client, tx *types.Transaction) {
+	receipt, err := client.TransactionReceipt(context.Background(), tx.Hash())
+	if err != nil {
+		log.Printf("Failed to fetch receipt for tx %s: %v\n", tx.Hash().Hex(), err)
+		return
 	}
 
-	name := "eth_getTransactionByHash"
-	// 结果数组存储的是每个请求的结果指针，也就是引用
-	rets := []*types.Transaction{}
-
-	// 获取 hash 数组的长度，方便在循环中逐个实例化 BatchElem
-	size := len(txHashs)
-
-	reqs := []rpc.BatchElem{}
-
-	for i := 0; i < size; i++ {
-		ret := types.Transaction{}
-		// 实例化每个 BatchElem
-		req := rpc.BatchElem{
-			Method: name,
-			Args:   []interface{}{txHashs[i]},
-			// &ret 传入单个请求的结果引用，这样是保证它在函数内部被修改值后，回到函数外来，值仍有效
-			Result: &ret,
-		}
-		reqs = append(reqs, req)  // 将每个 BatchElem 添加到 BatchElem 数组
-		rets = append(rets, &ret) // 每个请求的结果引用添加到结果数组中
-	}
-	err1 := client.Client().BatchCall(reqs) // 传入 BatchElem 数组，发起批量请求
-	return rets, err1
+	fmt.Printf("Transaction Hash: %s\n", tx.Hash().Hex())
+	fmt.Printf("Block Number: %d\n", receipt.BlockNumber.Uint64())
+	fmt.Printf("Transaction Index: %d\n", receipt.TransactionIndex)
+	fmt.Printf("Block Hash: %s\n", receipt.BlockHash.Hex())
+	fmt.Printf("Cumulative Gas Used: %d\n", receipt.CumulativeGasUsed)
+	fmt.Printf("Gas Used: %d\n", receipt.GasUsed)
+	fmt.Printf("Contract Address: %s\n", receipt.ContractAddress.Hex())
+	fmt.Printf("Status: %d\n", receipt.Status)
+	fmt.Printf("Effective Gas Price: %s\n", receipt.EffectiveGasPrice.String())
+	fmt.Println()
 }

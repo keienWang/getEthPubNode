@@ -1,7 +1,11 @@
 package main
 
-import gettrace "get_eth_node/getTrace"
+import trace "get_eth_node/getTrace"
 
 func main() {
-	gettrace.GetTrace()
+
+	trace.GetBlockTxTxR()
+	// getaccounts.GetAccount()
+	// getpeers.GetPeers()
+
 }
