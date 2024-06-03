@@ -1,11 +1,18 @@
 package main
 
-import trace "get_eth_node/getTrace"
+import (
+	getaccounts "get_eth_node/getAccounts"
+	"time"
+)
 
 func main() {
 
-	trace.GetBlockTxTxR()
-	// getaccounts.GetAccount()
+	// trace.GetBlockTxTxR()
+	for {
+		getaccounts.GetAccount()
+		time.Sleep(1 * time.Second)
+	}
+
 	// getpeers.GetPeers()
 
 }
