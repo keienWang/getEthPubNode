@@ -10,7 +10,7 @@ import (
 
 func GetAccount() {
 
-	client, err := ethclient.Dial("http://192.168.110.137:8545")
+	client, err := ethclient.Dial("http://192.168.110.153:8545")
 	if err != nil {
 		log.Fatal(err)
 	}
