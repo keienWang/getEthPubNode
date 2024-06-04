@@ -16,6 +16,14 @@ func GetAccount() {
 	}
 
 	block, _ := client.BlockNumber(context.Background())
-	fmt.Println(block)
+	fmt.Println("153block:", block)
+
+	client146, err := ethclient.Dial("http://192.168.110.146:8545")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	block2, _ := client146.BlockNumber(context.Background())
+	fmt.Println("146block:", block2)
 
 }
