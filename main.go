@@ -33,6 +33,7 @@ func main() {
 	// if err != nil {
 
 	// 	log.Fatalf("Failed to get suggested gas price: %v", err)
+
 	// }
 
 	// // 打印结果
