@@ -18,6 +18,7 @@ func main() {
 	// client, _ := ethclient.Dial("https://taiko.blockpi.network/v1/rpc/public")
 
 	// block, err := client.BlockByNumber(context.Background(), nil)
+
 	// if err != nil {
 
 	// 	log.Fatalf("Failed to get latest block: %v", err)
