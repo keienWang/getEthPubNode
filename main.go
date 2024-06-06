@@ -38,4 +38,5 @@ func gasPriceInGwei(price *big.Int) *big.Float {
 
 	gwei := new(big.Float).Quo(new(big.Float).SetInt(price), big.NewFloat(1e9))
 	return gwei
+
 }
