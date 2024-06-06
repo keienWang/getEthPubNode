@@ -31,6 +31,7 @@ func main() {
 
 	// gasPrice, err := client.SuggestGasPrice(context.Background())
 	// if err != nil {
+
 	// 	log.Fatalf("Failed to get suggested gas price: %v", err)
 	// }
 
