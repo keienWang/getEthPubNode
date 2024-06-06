@@ -19,6 +19,7 @@ func main() {
 
 	// block, err := client.BlockByNumber(context.Background(), nil)
 	// if err != nil {
+
 	// 	log.Fatalf("Failed to get latest block: %v", err)
 	// }
 
