@@ -1,7 +1,7 @@
 package main
 
 import (
-	getpeers "get_eth_node/getPeers"
+	getaccounts "get_eth_node/getAccounts"
 	"math/big"
 )
 
@@ -11,12 +11,12 @@ func main() {
 
 	// for {
 
-	// 	getaccounts.GetAccount()
+	getaccounts.GetAccount()
 
 	// 	time.Sleep(1 * time.Second)
 	// }
 
-	getpeers.GetPeers()
+	// getpeers.GetPeers()
 
 	// client, _ := ethclient.Dial("https://taiko.blockpi.network/v1/rpc/public")
 
