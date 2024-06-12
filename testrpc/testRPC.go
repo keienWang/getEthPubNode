@@ -19,7 +19,7 @@ func TestRpc() {
 	defer client.Close()
 
 	startBlock := 5000000
-	endBlock := 5010000
+	endBlock := 5001000
 	var totalDuration time.Duration
 	var mu sync.Mutex
 	var wg sync.WaitGroup
