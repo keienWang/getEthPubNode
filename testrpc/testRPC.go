@@ -67,4 +67,5 @@ func TestRpc() {
 	// 计算并打印总的运行时间
 	totalTime := endTime.Sub(startTime)
 	fmt.Printf("Total time taken for fetching blocks from %d to %d: %v\n", startBlock, endBlock, totalTime)
+
 }
