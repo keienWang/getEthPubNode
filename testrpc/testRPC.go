@@ -12,20 +12,20 @@ import (
 )
 
 func TestRpc() {
-	client, err := rpc.Dial("http://192.168.110.146:8545")
+	client, err := rpc.Dial("http://192.168.110.137:8545")
 	if err != nil {
 		log.Fatalf("Failed to connect to Ethereum RPC: %v", err)
 	}
 	defer client.Close()
 
 	startBlock := 5000000
-	endBlock := 5001000
+	endBlock := 5010000
 	var totalDuration time.Duration
 	var mu sync.Mutex
 	var wg sync.WaitGroup
 
 	// 使用一个通道来限制并行数
-	concurrency := 100
+	concurrency := 10
 
 	sem := make(chan struct{}, concurrency)
 
@@ -48,6 +48,8 @@ func TestRpc() {
 			// 获取所有交易
 			var transactions []types.Transaction
 			for _, tx := range block.Transactions() {
+
+				// fmt.Println(tx.Hash().String())
 				transactions = append(transactions, *tx)
 			}
 

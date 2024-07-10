@@ -1,12 +1,12 @@
 package main
 
-import "get_eth_node/testrpc"
+import getaccounts "get_eth_node/getAccounts"
 
 func main() {
 
 	// trace.GetBlockTxTxR()
 
-	// getaccounts.GetAccount()
-	testrpc.TestRpc()
+	getaccounts.GetAccount()
+	// testrpc.TestRpc()
 
 }
