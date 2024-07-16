@@ -21,6 +21,11 @@ func SoliditySha3(input string) string {
 	return selector
 }
 
+// StringToBytes converts a string to a byte slice
+func StringToBytes(str string) []byte {
+	return []byte(str)
+}
+
 // BytesToHex converts a byte slice to a hexadecimal string
 func BytesToHex(data []byte) string {
 	return hex.EncodeToString(data)
