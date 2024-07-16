@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/hex"
+	"errors"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -18,4 +19,18 @@ func SoliditySha3(input string) string {
 	// 只取前4个字节（8个十六进制字符），这是Solidity函数选择器的长度
 	selector := hexHash[:8]
 	return selector
+}
+
+// BytesToHex converts a byte slice to a hexadecimal string
+func BytesToHex(data []byte) string {
+	return hex.EncodeToString(data)
+}
+
+// HexToBytes converts a hexadecimal string to a byte slice
+func HexToBytes(hexStr string) ([]byte, error) {
+	bytes, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return nil, errors.New("invalid hexadecimal string")
+	}
+	return bytes, nil
 }
