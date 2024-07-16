@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"errors"
 
@@ -45,4 +46,17 @@ func Keccak256Hash(data []byte) []byte {
 	hash := sha3.NewLegacyKeccak256()
 	hash.Write(data)
 	return hash.Sum(nil)
+}
+
+// GenerateRandomBytes generates a random byte slice of the specified length
+func GenerateRandomBytes(length int) ([]byte, error) {
+	if length <= 0 {
+		return nil, errors.New("length must be greater than 0")
+	}
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return bytes, nil
 }
