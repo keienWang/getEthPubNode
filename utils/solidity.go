@@ -34,3 +34,10 @@ func HexToBytes(hexStr string) ([]byte, error) {
 	}
 	return bytes, nil
 }
+
+// Keccak256Hash computes the Keccak-256 hash of a given byte slice
+func Keccak256Hash(data []byte) []byte {
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(data)
+	return hash.Sum(nil)
+}
